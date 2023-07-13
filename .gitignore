@@ -1,3 +1,11 @@
+#folders with data
+data/
+logs/
+old_data_for_training/
+old_models/
+unet_larynx.hdf5
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
