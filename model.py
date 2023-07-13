@@ -3,11 +3,12 @@ import os
 import skimage.io as io
 import skimage.transform as trans
 import numpy as np
+import tensorflow as tf
 from keras.models import *
 from keras import layers
 from keras.optimizers import *
-from keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from keras import backend as keras
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler, EarlyStopping
+# from keras import backend as keras
 
 
 IMG_SIZE = 256
@@ -70,7 +71,7 @@ def unet(pretrained_weights=None, input_size=(IMG_SIZE, IMG_SIZE, 1)):
     """
 
 
-    inputs = keras.Input(input_size)
+    inputs = tf.keras.Input(input_size)
 
     augmented_inputs = data_augmentation(inputs)
 
