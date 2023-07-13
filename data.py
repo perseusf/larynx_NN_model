@@ -33,7 +33,7 @@ def unpack_video(train_path, video_folder, image_folder, target_size=(256, 256))
         os.mkdir(image_folder)
 
     # Get all the video file names from the video_folder directory
-    video_files = [f for f in os.listdir(train_path + '/' + video_folder)]
+    video_files = [f for f in os.listdir(train_path + '/' + video_folder) if f.endswith('.avi')]
 
     # Loop through the video files
     for video_file in video_files:
@@ -86,7 +86,7 @@ def unpack_tif(train_path, tif_folder, label_folder, target_size=(256, 256)):
         os.mkdir(os.path.join(train_path, label_folder))
 
     # Get list of all .tif files in folder
-    tif_files = [f for f in os.listdir(train_path + '/' + tif_folder)]
+    tif_files = [f for f in os.listdir(train_path + '/' + tif_folder) if f.endswith('.tif')]
     # Loop through each .tif file
     for tif_file in tif_files:
 
