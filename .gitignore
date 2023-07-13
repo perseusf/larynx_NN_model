@@ -2,6 +2,7 @@
 data/
 logs/
 old_data_for_training/
+old_data_for_learning/
 old_models/
 unet_larynx.hdf5
 
@@ -167,17 +168,3 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .DS_Store
-old_data_for_learning/tifs/alieva.labels.tif
-old_data_for_learning/tifs/frame-Аносова-Ю-Н-26.11.1980-06-07-2023_H.264.labels.tif
-old_data_for_learning/tifs/GX011449_H.264.labels.tif
-old_data_for_learning/tifs/GX011451_H.264.labels.tif
-old_data_for_learning/tifs/GX011452_H.264.labels.tif
-old_data_for_learning/tifs/shmatova.labels.tif
-old_data_for_learning/tifs/solovyeva.labels.tif
-old_data_for_learning/video/alieva.mp4
-old_data_for_learning/video/frame-Аносова-Ю-Н-26.11.1980-06-07-2023_H.264.avi
-old_data_for_learning/video/GX011449_H.264.avi
-old_data_for_learning/video/GX011451_H.264.avi
-old_data_for_learning/video/GX011452_H.264.avi
-old_data_for_learning/video/shmatova.mp4
-old_data_for_learning/video/solovyeva.mp4

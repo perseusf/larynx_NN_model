@@ -199,9 +199,9 @@ def training_dataset_generator(batch_size, train_path, image_folder, mask_folder
     for (img, mask) in train_generator:
         img, mask = adjust_data(img, mask, flag_multi_class, num_class)
         yield img, mask
+    
 
-
-def test_dataset_generator(test_path, num_image=30, target_size=(256, 256), flag_multi_class=False, as_gray=True):
+def test_dataset_generator(test_path, target_size=(256, 256), flag_multi_class=False, as_gray=True):
 
     """
     Generates test images as input for the model.
@@ -217,14 +217,13 @@ def test_dataset_generator(test_path, num_image=30, target_size=(256, 256), flag
         ndarray: A numpy array containing the test images.
     """
 
-    for i in range(num_image):
-        img = io.imread(os.path.join(test_path, "%d.png" % i), as_gray=as_gray)
+    for f in os.listdir(test_path):
+        img = io.imread(os.path.join(test_path, f), as_gray=as_gray)
         img = img / 255
         img = trans.resize(img, target_size)
         img = np.reshape(img, img.shape + (1,)) if (not flag_multi_class) else img
         img = np.reshape(img, (1,) + img.shape)
         yield img
-
 
 def geneTrainNpy(image_path, mask_path, flag_multi_class=False, num_class=2, image_prefix="image", mask_prefix="mask",
                  image_as_gray=True, mask_as_gray=True):
