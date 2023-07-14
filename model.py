@@ -21,7 +21,7 @@ resize_and_rescale = tf.keras.Sequential([
 data_augmentation = tf.keras.Sequential([
   layers.RandomFlip("horizontal_and_vertical"),
   layers.RandomRotation(
-        factor=0.2,
+        factor=0.1,
         fill_mode="reflect",
         interpolation="bilinear",
         seed=None
@@ -41,7 +41,7 @@ data_augmentation = tf.keras.Sequential([
         seed=None
   ),
   layers.RandomContrast(
-        factor=0.2,
+        factor=0.1,
         seed=None)
 ])
 
