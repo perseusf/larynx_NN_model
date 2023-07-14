@@ -143,7 +143,7 @@ def adjust_data(img, mask, flag_multi_class, num_class):
     return img, mask
 
 
-def training_dataset_generator(batch_size, train_path, image_folder, mask_folder, aug_dict, image_color_mode="grayscale",
+def training_dataset_generator(batch_size, train_path, image_folder, mask_folder, image_color_mode="grayscale",
                                mask_color_mode="grayscale", image_save_prefix="image", mask_save_prefix="mask",
                                flag_multi_class=False, num_class=2, save_to_dir=None, target_size=(256, 256), seed=1):
     """
@@ -154,7 +154,6 @@ def training_dataset_generator(batch_size, train_path, image_folder, mask_folder
         train_path (str): The path to the training data.
         image_folder (str): The name of the folder containing the input images.
         mask_folder (str): The name of the folder containing the input masks.
-        aug_dict (dict): A dictionary of augmentation parameters for the images and masks.
         image_color_mode (str): The color mode of the input images. Default is "grayscale".
         mask_color_mode (str): The color mode of the input masks. Default is "grayscale".
         image_save_prefix (str): The prefix to use for saving augmented images. Default is "image".
@@ -169,8 +168,8 @@ def training_dataset_generator(batch_size, train_path, image_folder, mask_folder
         A generator that yields batches of augmented data.
     """
 
-    image_datagen = ImageDataGenerator(**aug_dict)
-    mask_datagen = ImageDataGenerator(**aug_dict)
+    image_datagen = ImageDataGenerator()
+    mask_datagen = ImageDataGenerator()
 
     image_generator = image_datagen.flow_from_directory(
         train_path,
@@ -199,7 +198,8 @@ def training_dataset_generator(batch_size, train_path, image_folder, mask_folder
     for (img, mask) in train_generator:
         img, mask = adjust_data(img, mask, flag_multi_class, num_class)
         yield img, mask
-    
+
+
 
 def test_dataset_generator(test_path, target_size=(256, 256), flag_multi_class=False, as_gray=True):
 

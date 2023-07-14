@@ -4,7 +4,7 @@ logs/
 old_data_for_training/
 old_data_for_learning/
 old_models/
-unet_larynx.hdf5
+*.hdf5
 
 
 # Byte-compiled / optimized / DLL files
