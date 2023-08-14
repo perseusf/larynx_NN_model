@@ -5,6 +5,8 @@ old_data_for_training/
 old_data_for_learning/
 old_models/
 *.hdf5
+model_train_images/
+new_data_for_learning/
 
 
 # Byte-compiled / optimized / DLL files

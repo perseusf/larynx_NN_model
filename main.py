@@ -1,34 +1,71 @@
+import tensorflow as tf
+import datetime, os, shutil
 from model import *
+from model import PredictCallback
 from data import *
+import splitfolders
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-augmentation_args = dict(rotation_range=0.2,
-                         width_shift_range=0.05,
-                         height_shift_range=0.05,
-                         shear_range=0.05,
-                         zoom_range=0.05,
-                         horizontal_flip=True,
-                         fill_mode='nearest')
+print(tf.config.list_physical_devices('GPU'))
 
-# initialize the model
 model = unet()
-model_checkpoint = ModelCheckpoint('unet_larynx.hdf5', monitor='loss', verbose=1, save_best_only=True)
+# model_checkpoint = ModelCheckpoint('unet_larynx_{epoch:02d}-{loss:.2f}.hdf5', monitor='loss', verbose=1, save_best_only=True)
+model_checkpoint = ModelCheckpoint('unet_larynx.hdf5', monitor='val_loss', verbose=1, save_best_only=True)
 
-# prepare videos
-unpack_video('data/larynx/train', video_folder='video', image_folder='image', target_size=(256, 256))
-unpack_tif('data/larynx/train', tif_folder='tifs', label_folder='label', target_size=(256, 256))
 
-# train the model
-training_dataset = training_dataset_generator(batch_size=2,
-                                              train_path='data/larynx/train',
-                                              image_folder='image',
-                                              mask_folder='label',
-                                              aug_dict=augmentation_args,
+training_dataset = training_dataset_generator(2,
+                                              'data/larynx/train/train_dataset/',
+                                              'image',
+                                              'label',
                                               save_to_dir=None)
-model.fit_generator(training_dataset, steps_per_epoch=800, epochs=30, callbacks=[model_checkpoint])
 
-# testing the model
-test_dataset = test_dataset_generator("data/larynx/test")
-results = model.predict_generator(test_dataset, 6, verbose=1)
-saveResult("data/larynx/test", results)
+val_dataset = training_dataset_generator(2,
+                                              'data/larynx/train/validation_dataset/',
+                                              'image',
+                                              'label',
+                                              save_to_dir=None)
+
+# Set up TensorBoard callback
+logdir = os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
+
+# Early stopping callback
+early_stopping = tf.keras.callbacks.EarlyStopping(
+    monitor='val_loss',
+    patience=10,
+    verbose=1,
+    mode='min',
+    restore_best_weights=True
+)
+
+path_to_image = 'data\larynx\image_callback'
+epoch_predict = PredictCallback(path_to_image)
+
+# Train the model using the training dataset and TensorBoard callback
+history = model.fit(training_dataset, 
+          steps_per_epoch=100, 
+          epochs=5000, 
+          callbacks=[model_checkpoint, tensorboard_callback, early_stopping, epoch_predict],
+          validation_data=val_dataset,
+          validation_steps=100
+        )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

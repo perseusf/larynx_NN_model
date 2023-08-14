@@ -8,6 +8,7 @@ import skimage.transform as trans
 import cv2
 import multipagetiff as mtif
 from matplotlib import pyplot as plt
+import shutil
 
 
 Larynx = [128, 128, 128]
@@ -15,6 +16,11 @@ Unlabelled = [0, 0, 0]
 
 COLOR_DICT = np.array([Larynx, Unlabelled])
 
+def move_files(source_dir, target_dir):
+
+    file_names = os.listdir(source_dir)
+    for file_name in file_names:
+        shutil.move(os.path.join(source_dir, file_name), target_dir)
 
 def unpack_video(train_path, video_folder, image_folder, target_size=(256, 256)):
     """
@@ -33,7 +39,7 @@ def unpack_video(train_path, video_folder, image_folder, target_size=(256, 256))
         os.mkdir(image_folder)
 
     # Get all the video file names from the video_folder directory
-    video_files = [f for f in os.listdir(train_path + '/' + video_folder) if f.endswith('.avi')]
+    video_files = [f for f in os.listdir(train_path + '/' + video_folder) if (f.endswith('.avi') or f.endswith('.mp4'))]
 
     # Loop through the video files
     for video_file in video_files:
