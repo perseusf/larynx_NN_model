@@ -5,10 +5,13 @@ import os
 import glob
 import skimage.io as io
 import skimage.transform as trans
+import imageio
+from skimage import img_as_ubyte
 import cv2
 import multipagetiff as mtif
 from matplotlib import pyplot as plt
 import shutil
+
 
 
 Larynx = [128, 128, 128]
@@ -254,44 +257,22 @@ def geneTrainNpy(image_path, mask_path, image_prefix="image", mask_prefix="mask"
     return image_arr, mask_arr
 
 
-def labelVisualize(num_class, color_dict, img):
-    """
-    Visualize label masks with color-coded classes.
-
-    Args:
-        num_class (int): The number of classes in the label mask.
-        color_dict (dict): A dictionary mapping class indices to RGB color values.
-        img (ndarray): A 2D or 3D numpy array representing the label mask.
-
-    Returns:
-        ndarray: A 3D numpy array representing the color-coded label mask.
-
-    Note:
-        This function assumes that the label mask contains class indices ranging from 0 to num_class - 1,
-        and the color_dict contains RGB color values normalized to the range [0, 255].
-    """
-
-    img = img[:, :, 0] if len(img.shape) == 3 else img
-    img_out = np.zeros(img.shape + (3,))
-    for i in range(num_class):
-        img_out[img == i, :] = color_dict[i]
-    return img_out / 255
-
-
-def saveResult(save_path, npyfile, flag_multi_class=False, num_class=2):
+def saveResult(save_path, npyfile):
     """
     Save the predicted masks as images to the specified directory.
 
     Args:
         - save_path (str): The path to the directory where the predicted masks should be saved.
         - npyfile (numpy.ndarray): The predicted masks to save as images.
-        - flag_multi_class (bool): A flag indicating whether the problem is multi-class or binary.
-        - num_class (int): The number of classes in the multi-class problem.
 
     Returns:
         - None
     """
 
+    # specify a threshold 0-255
+    threshold = 1
+
     for i, item in enumerate(npyfile):
-        img = labelVisualize(num_class, COLOR_DICT, item) if flag_multi_class else item[:, :, 0]
-        io.imsave(os.path.join(save_path, "%d_predict.png" % i), img)
+        img = item[:, :, 0]
+        imageio.imwrite(os.path.join(save_path, "%d_predict.png" % i), img)
+        # io.imsave(os.path.join(save_path, "%d_predict.png" % i), (img * 255).astype(np.uint8))

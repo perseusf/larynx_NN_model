@@ -17,6 +17,7 @@ from data import test_dataset_generator
 
 
 IMG_SIZE = 256
+seed=17
 
 class PredictCallback(callbacks.Callback):
     def __init__(self, path):
@@ -41,29 +42,29 @@ data_augmentation = tf.keras.Sequential([
         factor=0.05,
         fill_mode="reflect",
         interpolation="bilinear",
-        seed=None
+        seed=seed
   ),
   layers.RandomTranslation(
         height_factor=0.05,
         width_factor=0.05,
         fill_mode='reflect',
         interpolation='bilinear',
-        seed=None
+        seed=seed
   ),
   layers.RandomZoom(
-        height_factor=0.05,
-        width_factor=0.05,
+        height_factor=0.01,
+        width_factor=0.01,
         fill_mode="reflect",
         interpolation="bilinear",
-        seed=None
+        seed=seed
   ),
   layers.RandomContrast(
         factor=0.05,
-        seed=None)
+        seed=seed)
 ])
 
 
-def dice_coefficient(y_true, y_pred, smooth=.001):       
+def dice_coefficient(y_true, y_pred, smooth=0.001):       
     """
     Dice = (2*|X & Y|)/ (|X|+ |Y|)
          =  2*sum(|A*B|)/(sum(A^2)+sum(B^2))
@@ -107,8 +108,8 @@ def unet(pretrained_weights=None, input_size=(IMG_SIZE, IMG_SIZE, 1)):
 
     inputs = tf.keras.Input(input_size)
 
-    augmented_inputs = data_augmentation(inputs)
-    # augmented_inputs = inputs
+    # augmented_inputs = data_augmentation(inputs)
+    augmented_inputs = inputs
 
     conv1 = layers.Conv2D(64, 3, activation='relu', padding='same', kernel_initializer='he_normal')(augmented_inputs)
     # conv1 = layers.BatchNormalization()(conv1)
@@ -177,7 +178,7 @@ def unet(pretrained_weights=None, input_size=(IMG_SIZE, IMG_SIZE, 1)):
 
     model = Model(inputs=inputs, outputs=conv10)
 
-    model.compile(optimizer=Adam(learning_rate=1e-5), loss=dice_loss, metrics=[dice_coefficient])
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-5), loss=dice_loss, metrics=[dice_coefficient])
 
     if pretrained_weights:
         model.load_weights(pretrained_weights)
